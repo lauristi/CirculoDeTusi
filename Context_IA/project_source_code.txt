@@ -1,0 +1,222 @@
+﻿==================================================
+CONTEUDO COMPACTADO: CirculoDeTusi\Form1.cs
+USINGS: CirculoDeTusi.Calculos, System.Drawing, System.Windows.Forms
+==================================================
+namespace CirculoDeTusi
+{
+    public partial class frmEfeitoTusi : Form
+    {
+        private Timer relogioJanela;
+        private CalculoHMS Hms = new CalculoHMS();
+        //---------------------------------------
+        private Brush pincel_Fundo;
+        private Brush pincel_CirculosBrancos;
+        private Pen caneta_LinhaGuia;
+        public frmEfeitoTusi()
+        {
+            InitializeComponent();
+        }
+        private void frmEfeitoTusi_Load(object sender, EventArgs e)
+        {
+            SetupInicial();
+            // 1. Instanciamos o nosso relÃ³gio
+            relogioJanela = new Timer();
+            // 2. Definimos o intervalo em milissegundos (16ms equivale a cerca de 60 quadros por segundo)
+            relogioJanela.Interval = 16;
+            // 3. Dizemos ao C# qual funÃ§Ã£o deve ser executada a cada "tique" do relÃ³gio
+            relogioJanela.Tick += RelogioJanela_Tick;
+            // 4. Ativamos o recurso de DoubleBuffered para evitar que a tela fique piscando (o famoso "flicker")
+            this.DoubleBuffered = true;
+            // 5. Ligamos o relÃ³gio (o loop comeÃ§a aqui!)
+            relogioJanela.Start();
+            this.Paint += frmEfeitoTusi_Paint;
+        }
+        private void frmEfeitoTusi_Paint(object? sender, PaintEventArgs e)
+        {
+            Hms.TotalCirculosMenores = (int)TotalCirculos.Value;
+            DesenharCirculoDeTusi(e);
+        }
+        private void SetupInicial()
+        {
+            //Criar os pincÃ©is e canetas (as cores que vai usar)
+            //'Brush' preenche formas
+            //'Pen' desenha o contorno (linhas)
+            pincel_Fundo = new SolidBrush(Color.FromArgb(180, 0, 0));
+            pincel_CirculosBrancos = Brushes.White;
+            caneta_LinhaGuia = new Pen(Color.FromArgb(50, 255, 255, 255), 1);
+            //--------------------------------------------------
+            Hms.RaioCirculoMaior = 300;
+            Hms.AlturaJanela = this.ClientSize.Height;
+            Hms.LarguraJanela = this.ClientSize.Width;
+            Hms.TotalCirculosMenores = 8;
+            Hms.TempoAnimacao = 0f;
+        }
+        private void DesenharCirculoDeTusi(PaintEventArgs e)
+        {
+            //01- O objeto 'g' Ã© a sua tela de pintura (o seu canvas)
+            //02- Ativa a suavizaÃ§Ã£o de serrilhado (Anti-aliasing) para cÃ­rculos perfeitos
+            //03- Limpa a tela com uma cor de fundo (substitui o CLS)
+            Graphics g = e.Graphics;
+            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            g.Clear(Color.Black);
+            //CIRCULO PREENCHIDO
+            if (chkExibirCirculo.Checked)
+            {
+                g.FillEllipse(pincel_Fundo, Hms.GetCirculoMaior_X(), Hms.GetCirculoMaior_Y(), Hms.GetCirculoMaior_Largura(), Hms.GetCirculoMaior_Altura());
+            }
+            for (int linhaAtual = 0; linhaAtual < Hms.TotalCirculosMenores; linhaAtual++)
+            {
+                float anguloAtual = Hms.GetAnguloAtual(linhaAtual);
+                if (chkExibirLinhas.Checked)
+                {
+                    g.DrawLine(caneta_LinhaGuia, Hms.GetExtremidadeLinha_X1(anguloAtual),
+                                                Hms.GetExtremidadeLinha_Y1(anguloAtual),
+                                                Hms.GetExtremidadeLinha_X2(anguloAtual),
+                                                Hms.GetExtremidadeLinha_Y2(anguloAtual));
+                }
+                float distanciaAtual = Hms.GetDistanciaEntreCirculos(anguloAtual);
+                g.FillEllipse(pincel_CirculosBrancos, Hms.GetCirculoMenor_X(anguloAtual, distanciaAtual),
+                                                      Hms.GetCirculoMenor_Y(anguloAtual,distanciaAtual),
+                                                      Hms.GetCirculoMenor_Largura(),
+                                                      Hms.GetCirculoMenor_Altura()
+                                                    );
+            }
+        }
+        private void RelogioJanela_Tick(object? sender, EventArgs e)
+        {
+            //01  A cada tique do relÃ³gio, avanÃ§amos o tempo da animaÃ§Ã£o (Aproximadamente 16ms por tique)
+            //02  Pedimos para a janela se redesenhar (chamando o evento Paint)
+            Hms.TempoAnimacao += 0.016f;
+            this.Invalidate();
+        }
+    }
+}
+
+
+==================================================
+CONTEUDO COMPACTADO: CirculoDeTusi\Program.cs
+USINGS: 
+==================================================
+namespace CirculoDeTusi
+{
+    internal static class Program
+    {
+        ///  The main entry point for the application.
+        [STAThread]
+        static void Main()
+        {
+            // To customize application configuration such as set high DPI settings or default font,
+            // see https://aka.ms/applicationconfiguration.
+            ApplicationConfiguration.Initialize();
+            Application.Run(new frmEfeitoTusi());
+        }
+    }
+}
+
+
+==================================================
+CONTEUDO COMPACTADO: CirculoDeTusi\Caculos\CalculoHMS.cs
+USINGS: Microsoft.VisualBasic.Logging, System.Runtime.InteropServices
+==================================================
+namespace CirculoDeTusi.Calculos
+{
+    public class CalculoHMS
+    {
+        // Movimento Harmônico Simples (MHS).
+        // Propriedades para armazenar as dimensões da janela, o raio do círculo maior, o número total de círculos menores e o tempo de animação
+        public int LarguraJanela { get; set; }
+        public int AlturaJanela { get; set; }
+        public int RaioCirculoMaior { get; set; }
+        public int TotalCirculosMenores { get; set; }
+        public float TempoAnimacao { get; set; }
+        #region Geral
+        public int GetCentroJanela_X()
+        {
+            return (LarguraJanela / 2);
+        }
+        public int GetCentroJanela_Y()
+        {
+            return (AlturaJanela / 2);
+        }
+        public int GetRaioCirculoMenor()
+        {
+            if (TotalCirculosMenores > 3)
+            {
+                return (RaioCirculoMaior / TotalCirculosMenores);
+            }
+            else
+            {
+                return (RaioCirculoMaior / 4);
+            }
+        }
+        public float GetAnguloAtual(int linhaAtual)
+        {
+            return (float)(linhaAtual * Math.PI / TotalCirculosMenores);
+        }
+        #endregion Geral
+        #region Calculo do circulo Maior
+        public float GetCirculoMaior_X()
+        {
+            return (GetCentroJanela_X() - RaioCirculoMaior);
+        }
+        public float GetCirculoMaior_Y()
+        {
+            return (GetCentroJanela_Y() - RaioCirculoMaior);
+        }
+        public float GetCirculoMaior_Altura()
+        {
+            return (RaioCirculoMaior * 2);
+        }
+        public float GetCirculoMaior_Largura()
+        {
+            return (RaioCirculoMaior * 2);
+        }
+        #endregion Calculo do circulo Maior
+        #region Calculo dos circulos menores
+        public float GetDistanciaEntreCirculos(float angulo)
+        {
+            // O limite agora é a borda interna do círculo grande
+            // Usamos esse novo limite na oscilação
+            float raioMaximoPermitido = (RaioCirculoMaior - GetRaioCirculoMenor());
+            return (raioMaximoPermitido * (float)Math.Cos(TempoAnimacao + angulo));
+        }
+        public float GetCirculoMenor_X(float angulo, float distanciaAtual)
+        {
+            return (GetCentroJanela_X() + distanciaAtual * (float)Math.Cos(angulo) - GetRaioCirculoMenor());
+        }
+        public float GetCirculoMenor_Y(float angulo, float distanciaAtual)
+        {
+            return (GetCentroJanela_Y() + distanciaAtual * (float)Math.Sin(angulo) - GetRaioCirculoMenor());
+        }
+        public float GetCirculoMenor_Altura()
+        {
+            return (GetRaioCirculoMenor() * 2);
+        }
+        public float GetCirculoMenor_Largura()
+        {
+            return (GetRaioCirculoMenor() * 2);
+        }
+        #endregion Calculo dos circulos menores
+        #region Calculo da linha de extremidade do círculo maior
+        public float GetExtremidadeLinha_X1(float angulo)
+        {
+            return (GetCentroJanela_X() + RaioCirculoMaior * (float)Math.Cos(angulo));
+        }
+        public float GetExtremidadeLinha_Y1(float angulo)
+        {
+            return (GetCentroJanela_Y() + RaioCirculoMaior * (float)Math.Sin(angulo));
+        }
+        public float GetExtremidadeLinha_X2(float angulo)
+        {
+            return (GetCentroJanela_X() - RaioCirculoMaior * (float)Math.Cos(angulo));
+        }
+        public float GetExtremidadeLinha_Y2(float angulo)
+        {
+            return (GetCentroJanela_Y() - RaioCirculoMaior * (float)Math.Sin(angulo));
+        }
+        #endregion
+    }
+}
+
+
+

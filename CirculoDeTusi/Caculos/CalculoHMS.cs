@@ -80,14 +80,14 @@ namespace CirculoDeTusi.Calculos
             return (raioMaximoPermitido * (float)Math.Cos(TempoAnimacao + angulo));
         }
 
-        public float GetCirculoMenor_X(float angulo)
+        public float GetCirculoMenor_X(float angulo, float distanciaAtual)
         {
-            return (GetCentroJanela_X() + GetDistanciaEntreCirculos(angulo) * (float)Math.Cos(angulo) - GetRaioCirculoMenor());
+            return (GetCentroJanela_X() + distanciaAtual * (float)Math.Cos(angulo) - GetRaioCirculoMenor());
         }
 
-        public float GetCirculoMenor_Y(float angulo)
+        public float GetCirculoMenor_Y(float angulo, float distanciaAtual)
         {
-            return (GetCentroJanela_Y() + GetDistanciaEntreCirculos(angulo) * (float)Math.Sin(angulo) - GetRaioCirculoMenor());
+            return (GetCentroJanela_Y() + distanciaAtual * (float)Math.Sin(angulo) - GetRaioCirculoMenor());
         }
 
         public float GetCirculoMenor_Altura()

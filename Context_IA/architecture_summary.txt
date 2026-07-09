@@ -1,0 +1,47 @@
+﻿==================================================
+INDICE GLOBAL DO PROJETO
+==================================================
+[CONTROLLERS]
+[INTERFACES]
+[DTOs/MODELS]
+[OUTROS]
+  - Form1
+  - Program
+  - CalculoHMS
+[SERVICES]
+
+==================================================
+MAPA DE DEPENDENCIAS (CONSTRUTORES)
+==================================================
+
+==================================================
+FLUXO DE CHAMADAS TEORICO (SUGESTAO DE EXECUCAO)
+==================================================
+Controller -> Service/Handler -> Repository/Scraper/AI_Filter -> External_Response
+
+==================================================
+ANALISE ARQUITETURAL DO PROJETO C#
+==================================================
+
+--------------------------------------------------
+ARQUIVO: CirculoDeTusi\Form1.cs
+TYPE: Outro
+NAMESPACE: CirculoDeTusi
+METRICS: Linhas Brutas: 117 | Metodos Estimados: 12 | Async: 0
+--------------------------------------------------
+
+--------------------------------------------------
+ARQUIVO: CirculoDeTusi\Program.cs
+TYPE: Outro
+NAMESPACE: CirculoDeTusi
+METRICS: Linhas Brutas: 17 | Metodos Estimados: 1 | Async: 0
+--------------------------------------------------
+
+--------------------------------------------------
+ARQUIVO: CirculoDeTusi\Caculos\CalculoHMS.cs
+TYPE: Outro
+NAMESPACE: CirculoDeTusi.Calculos
+METRICS: Linhas Brutas: 129 | Metodos Estimados: 23 | Async: 0
+--------------------------------------------------
+
+

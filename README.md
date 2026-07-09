@@ -38,3 +38,5 @@ $$Y = Y_{centro} + d \times \sin(\theta_i) - R_{menor}$$
 * **Otimização de Renderização:** Uso de `DoubleBuffered` ativo para eliminação de *flicker* (piscadas de tela) e `SmoothingMode.AntiAlias` para suavização de serrilhados.
 * **Gerenciamento de Memória Eficiente:** Alocação estática de recursos gráficos (`Pen` e `SolidBrush`) no escopo do formulário, evitando sobrecarga do *Garbage Collector* em loops de alta frequência (60 FPS).
 * **Escalonamento Dinâmico:** Algoritmo inteligente que reduz o diâmetro das esferas proporcionalmente à medida que o usuário aumenta o número de linhas, preservando a harmonia visual da ilusão estética.
+
+![Demonstração do Par de Tusi](imagens/Tusi.gif)

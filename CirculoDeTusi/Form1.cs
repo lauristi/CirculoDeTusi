@@ -6,10 +6,13 @@ namespace CirculoDeTusi
 
     public partial class frmEfeitoTusi : Form
     {
-        //Configuracoes do Timer
+        
         private Timer relogioJanela;
-
         private CalculoHMS Hms = new CalculoHMS();
+        //---------------------------------------
+        private Brush pincel_Fundo;
+        private Brush pincel_CirculosBrancos;
+        private Pen caneta_LinhaGuia;
 
         public frmEfeitoTusi()
         {
@@ -46,6 +49,17 @@ namespace CirculoDeTusi
 
         private void SetupInicial()
         {
+
+            //Criar os pincéis e canetas (as cores que vai usar)
+            //'Brush' preenche formas
+            //'Pen' desenha o contorno (linhas)
+
+            pincel_Fundo = new SolidBrush(Color.FromArgb(180, 0, 0));
+            pincel_CirculosBrancos = Brushes.White;
+            caneta_LinhaGuia = new Pen(Color.FromArgb(50, 255, 255, 255), 1);
+            
+            //--------------------------------------------------
+            
             Hms.RaioCirculoMaior = 300;
             Hms.AlturaJanela = this.ClientSize.Height;
             Hms.LarguraJanela = this.ClientSize.Width;
@@ -62,18 +76,6 @@ namespace CirculoDeTusi
             Graphics g = e.Graphics;
             g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             g.Clear(Color.Black);
-
-            #region "Definicoes"
-
-            // 3. Criar os pincéis e canetas (as cores que vai usar)
-            // 'Brush' preenche formas
-            // 'Pen' desenha o contorno (linhas)
-
-            Brush pincel_Fundo = new SolidBrush(Color.FromArgb(180, 0, 0)); // Vermelho escuro
-            Brush pincel_CirculosBrancos = Brushes.White;
-            Pen caneta_LinhaGuia = new Pen(Color.FromArgb(50, 255, 255, 255), 1); // Linha branca semi-transparente
-
-            #endregion "Definicoes"
 
             //CIRCULO PREENCHIDO
             if (chkExibirCirculo.Checked)
@@ -95,8 +97,8 @@ namespace CirculoDeTusi
 
                 float distanciaAtual = Hms.GetDistanciaEntreCirculos(anguloAtual);
 
-                g.FillEllipse(pincel_CirculosBrancos, Hms.GetCirculoMenor_X(anguloAtual),
-                                                      Hms.GetCirculoMenor_Y(anguloAtual),
+                g.FillEllipse(pincel_CirculosBrancos, Hms.GetCirculoMenor_X(anguloAtual, distanciaAtual),
+                                                      Hms.GetCirculoMenor_Y(anguloAtual,distanciaAtual),
                                                       Hms.GetCirculoMenor_Largura(),
                                                       Hms.GetCirculoMenor_Altura()
                                                     );
