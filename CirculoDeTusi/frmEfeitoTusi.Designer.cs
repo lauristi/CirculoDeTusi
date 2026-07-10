@@ -51,7 +51,6 @@
             // 
             TotalCirculos.BorderStyle = BorderStyle.FixedSingle;
             TotalCirculos.Location = new Point(321, 8);
-            TotalCirculos.Maximum = new decimal(new int[] { 50, 0, 0, 0 });
             TotalCirculos.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             TotalCirculos.Name = "TotalCirculos";
             TotalCirculos.Size = new Size(120, 23);
